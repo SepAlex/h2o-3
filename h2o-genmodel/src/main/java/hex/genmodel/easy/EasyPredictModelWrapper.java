@@ -63,7 +63,7 @@ import static hex.genmodel.utils.ArrayUtils.nanArray;
  */
 public class EasyPredictModelWrapper implements Serializable {
   // These private members are read-only after the constructor.
-  public final GenModel m;
+  private final GenModel m;
   private final RowToRawDataConverter rowDataConverter;
 
   private final boolean useExtendedOutput;
