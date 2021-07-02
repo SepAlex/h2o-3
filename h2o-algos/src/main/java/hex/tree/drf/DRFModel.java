@@ -3,7 +3,9 @@ package hex.tree.drf;
 import hex.tree.SharedTreeModel;
 import hex.tree.SharedTreeModelWithContributions;
 import hex.util.EffectiveParametersUtils;
+import water.Job;
 import water.Key;
+import water.fvec.Frame;
 import water.fvec.NewChunk;
 import water.util.MathUtils;
 import water.util.SBPrintStream;
@@ -43,6 +45,24 @@ public class DRFModel extends SharedTreeModelWithContributions<DRFModel, DRFMode
 
   public void initActualParamValuesAfterOutputSetup(boolean isClassifier) {
     EffectiveParametersUtils.initStoppingMetric(_parms, isClassifier);
+  }
+
+  @Override
+  public Frame scoreContributions(Frame frame, Key<Frame> destination_key, Job<Frame> j) {
+    if (_parms._binomial_double_trees) {
+      throw new UnsupportedOperationException(
+              "Calculating contributions is currently not supported for binomial_double_trees=True option.");
+    }
+    return super.scoreContributions(frame, destination_key, j);
+  }
+
+  @Override
+  public Frame scoreContributions(Frame frame, Key<Frame> destination_key, Job<Frame> j, ContributionsOptions options) {
+    if (_parms._binomial_double_trees) {
+      throw new UnsupportedOperationException(
+              "Calculating contributions is currently not supported for binomial_double_trees=True option.");
+    }
+    return super.scoreContributions(frame, destination_key, j, options);
   }
 
   @Override

@@ -203,6 +203,36 @@ public class DRFPredictContribsTest extends TestUtil {
         }
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testScoreContributionsBinomialDoubleTrees() {
+        try {
+            Scope.enter();
+            Frame fr = Scope.track(parseTestFile("smalldata/junit/titanic_alt.csv"));
+            int ci = fr.find("survived"); // Change survived to categorical
+            fr.toCategoricalCol(ci);
+
+            DRFModel.DRFParameters parms = new DRFModel.DRFParameters();
+
+            parms._train = fr._key;
+            parms._distribution = bernoulli;
+            parms._response_column = "survived";
+            parms._ntrees = 5;
+            parms._max_depth = 4;
+            parms._min_rows = 1;
+            parms._nbins = 50;
+            parms._score_each_iteration = true;
+            parms._binomial_double_trees = true;
+            parms._seed = 42;
+
+            DRF job = new DRF(parms);
+            DRFModel drf = job.trainModel().get();
+            Scope.track_generic(drf);
+
+            drf.scoreContributions(fr, Key.<Frame>make("contributions_binomial_titanic"));
+        } finally {
+            Scope.exit();
+        }
+    }
 
     private static class CheckTreeSHAPTask extends MRTask<DRFPredictContribsTest.CheckTreeSHAPTask> {
         final DRFModel _model;
